@@ -81,3 +81,13 @@ python -m proto_dyno.cli list
 - The load starts disabled. Move the slider, then press `Enable Load`.
 - Press `Stop Load` before changing wiring.
 - Keep hardware current limits, fuses, and external meters in the setup. Software clamps are a backup, not the primary protection.
+
+## Dyno Joulemeter Firmware
+
+This repo also includes Arduino firmware for the prototype dyno joulemeter:
+
+```text
+arduino/dyno_joulemeter/dyno_joulemeter.ino
+```
+
+That sketch reads voltage and ACS712 current through an ADS1115, displays live V/I/P/J on an SSD1306 OLED, and logs CSV-style serial rows for dyno runs. See `arduino/dyno_joulemeter/README.md` for wiring, calibration constants, and library requirements.

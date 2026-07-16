@@ -87,7 +87,7 @@ python -m proto_dyno.cli list
 This repo also includes Arduino firmware for the prototype dyno joulemeter:
 
 ```text
-arduino/dyno_joulemeter/dyno_joulemeter.ino
+dyno_joulemeter_firmware/dyno_joulemeter.ino
 ```
 
-That sketch reads voltage and ACS712 current through an ADS1115, displays live V/I/P/J on an SSD1306 OLED, and logs CSV-style serial rows for dyno runs. See `arduino/dyno_joulemeter/README.md` for wiring, calibration constants, and library requirements.
+That sketch reads voltage and ACS712 current through an ADS1115, displays live V/I/P/J on an SSD1306 OLED, and logs CSV-style serial rows for dyno runs. See `dyno_joulemeter_firmware/README.md` for wiring, calibration constants, and library requirements.

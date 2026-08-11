@@ -3,6 +3,8 @@
 #include <Adafruit_SSD1306.h>
 #include <Adafruit_ADS1X15.h>
 
+#include "dyno_telemetry_espnow.h"
+
 // Prototype dyno joulemeter:
 // - ADS1115 AIN2: voltage sense input
 // - ADS1115 AIN1: ACS712 current sensor output
@@ -14,6 +16,7 @@ Adafruit_ADS1115 ads;
 #define SCREEN_HEIGHT 64
 
 Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, -1);
+DynoTelemetryEspNowSender telemetrySender;
 
 const int startButtonPin = 4;
 const int stopButtonPin = 5;
@@ -85,6 +88,7 @@ void setup() {
   }
 
   ads.setGain(GAIN_TWOTHIRDS);
+  telemetrySender.begin();
 }
 
 void loop() {
@@ -127,7 +131,24 @@ void loop() {
       break;
   }
 
+  sendTelemetry(reading);
+
   delay(100);
+}
+
+void sendTelemetry(JoulemeterReading reading) {
+  DynoRunState state = DYNO_STATE_IDLE;
+  if (timerState == RUNNING) state = DYNO_STATE_RUNNING;
+  if (timerState == PAUSED) state = DYNO_STATE_PAUSED;
+
+  telemetrySender.send(
+    millis(),
+    static_cast<int32_t>(reading.voltage * 1000.0f),
+    static_cast<int32_t>(reading.current * 1000.0f),
+    static_cast<int32_t>(reading.power * 1000.0f),
+    static_cast<uint64_t>(max(0.0, energyJ) * 1000.0),
+    state
+  );
 }
 
 JoulemeterReading readJoulemeter() {

@@ -52,7 +52,7 @@ The important constants live near the top of `dyno_joulemeter_firmware.ino`:
 
 ```cpp
 const float CURRENT_SENSOR_V_PER_A = 0.066f;
-const float VOLTAGE_SCALE = 1.0f;
+const float VOLTAGE_SCALE = 11.0f;
 ```
 
 At every boot, the OLED displays **Zeroing current** while the firmware waits
@@ -65,7 +65,10 @@ Readings within `0.03 A` of calibrated zero and voltage readings within
 
 `CURRENT_SENSOR_V_PER_A` is `0.066 V/A`, matching a common ACS712 30 A module. Change it if the installed sensor is a 5 A or 20 A version.
 
-`VOLTAGE_SCALE` must match the voltage divider. It is currently `1.0`, meaning the displayed voltage is the ADS1115 input voltage. Do not connect dyno voltage directly unless the divider keeps the ADS1115 input within range. Set this to the divider ratio before measuring higher voltages.
+`VOLTAGE_SCALE` matches the installed divider: `10 kOhm` from dyno positive
+to ADS1115 AIN2 and `1 kOhm` from AIN2 to ground. The ADC sees
+`Vin * 1k / (10k + 1k)`, so the input-voltage multiplier is `11.0`. Keep the
+divider installed; do not connect dyno voltage directly to the ADS1115 input.
 
 ## Controls
 

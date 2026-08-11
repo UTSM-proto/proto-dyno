@@ -30,7 +30,9 @@ const int VOLTAGE_ADC_CHANNEL = 2;
 const int CURRENT_ADC_CHANNEL = 1;
 
 const float CURRENT_SENSOR_V_PER_A = 0.066f;
-const float VOLTAGE_SCALE = 1.0f;
+// 10 kOhm from dyno+ to AIN2 and 1 kOhm from AIN2 to ground:
+// Vin / Vadc = (10k + 1k) / 1k = 11.
+const float VOLTAGE_SCALE = 11.0f;
 const float CURRENT_DEADBAND_A = 0.03f;
 const float VOLTAGE_DEADBAND_V = 0.005f;
 const uint32_t CURRENT_ZERO_SETTLE_MS = 2000;

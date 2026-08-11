@@ -48,15 +48,20 @@ The old temporary sketch also included `ADS1X58.h`; this checked-in version uses
 
 ## Calibration Constants
 
-The important constants live near the top of `dyno_joulemeter.ino`:
+The important constants live near the top of `dyno_joulemeter_firmware.ino`:
 
 ```cpp
-const float CURRENT_SENSOR_ZERO_V = 2.582f;
 const float CURRENT_SENSOR_V_PER_A = 0.066f;
 const float VOLTAGE_SCALE = 1.0f;
 ```
 
-`CURRENT_SENSOR_ZERO_V` is the no-current ACS712 output voltage. Re-measure this with no load connected.
+At every boot, the OLED displays **Zeroing current** while the firmware waits
+two seconds for the ACS712 to settle and then averages its zero-current output
+for three seconds. Keep the dyno stopped with no current flowing throughout
+this sequence. The measured voltage becomes the run's current zero offset.
+
+Readings within `0.03 A` of calibrated zero and voltage readings within
+`0.005 V` of zero are displayed and transmitted as zero to suppress idle noise.
 
 `CURRENT_SENSOR_V_PER_A` is `0.066 V/A`, matching a common ACS712 30 A module. Change it if the installed sensor is a 5 A or 20 A version.
 

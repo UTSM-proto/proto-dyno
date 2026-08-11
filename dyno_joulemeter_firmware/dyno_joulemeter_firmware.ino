@@ -29,9 +29,14 @@ const int OLED_ADDR = 0x3C;
 const int VOLTAGE_ADC_CHANNEL = 2;
 const int CURRENT_ADC_CHANNEL = 1;
 
-const float CURRENT_SENSOR_ZERO_V = 2.582f;
 const float CURRENT_SENSOR_V_PER_A = 0.066f;
 const float VOLTAGE_SCALE = 1.0f;
+const float CURRENT_DEADBAND_A = 0.03f;
+const float VOLTAGE_DEADBAND_V = 0.005f;
+const uint32_t CURRENT_ZERO_SETTLE_MS = 2000;
+const uint32_t CURRENT_ZERO_CALIBRATION_MS = 3000;
+
+float currentSensorZeroV = 2.582f;
 
 enum TimerState {
   IDLE,
@@ -88,7 +93,40 @@ void setup() {
   }
 
   ads.setGain(GAIN_TWOTHIRDS);
+
+  calibrateCurrentZero();
   telemetrySender.begin();
+}
+
+void calibrateCurrentZero() {
+  display.clearDisplay();
+  display.setTextSize(1);
+  display.setCursor(0, 8);
+  display.println("Zeroing current");
+  display.println("Keep dyno stopped");
+  display.println("No current/load");
+  display.display();
+
+  Serial.println("Waiting for ACS712 to settle with zero current...");
+  delay(CURRENT_ZERO_SETTLE_MS);
+  Serial.println("Calibrating ACS712 zero for 3 seconds...");
+
+  uint32_t startedMs = millis();
+  double voltageSum = 0.0;
+  uint32_t sampleCount = 0;
+  while (millis() - startedMs < CURRENT_ZERO_CALIBRATION_MS) {
+    int16_t raw = ads.readADC_SingleEnded(CURRENT_ADC_CHANNEL);
+    voltageSum += ads.computeVolts(raw);
+    sampleCount++;
+    delay(2);
+  }
+
+  if (sampleCount > 0) {
+    currentSensorZeroV = voltageSum / sampleCount;
+  }
+  Serial.printf("ACS712 zero calibrated: %.6f V from %lu samples\n",
+                currentSensorZeroV,
+                static_cast<unsigned long>(sampleCount));
 }
 
 void loop() {
@@ -154,10 +192,13 @@ void sendTelemetry(JoulemeterReading reading) {
 JoulemeterReading readJoulemeter() {
   int16_t rawBattery = ads.readADC_SingleEnded(VOLTAGE_ADC_CHANNEL);
   float voltage = ads.computeVolts(rawBattery) * VOLTAGE_SCALE;
+  if (fabsf(voltage) < VOLTAGE_DEADBAND_V) voltage = 0.0f;
 
   int16_t rawCurrentSensor = ads.readADC_SingleEnded(CURRENT_ADC_CHANNEL);
   float currentSensorVoltage = ads.computeVolts(rawCurrentSensor);
-  float current = (currentSensorVoltage - CURRENT_SENSOR_ZERO_V) / CURRENT_SENSOR_V_PER_A;
+  float current = (currentSensorVoltage - currentSensorZeroV) /
+                  CURRENT_SENSOR_V_PER_A;
+  if (fabsf(current) < CURRENT_DEADBAND_A) current = 0.0f;
 
   JoulemeterReading reading;
   reading.voltage = voltage;

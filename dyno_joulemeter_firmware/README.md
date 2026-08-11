@@ -10,8 +10,8 @@ Use this alongside the Python DL24 load slider when the dyno needs an independen
 - ACS712 current sensor output into ADS1115 `AIN1`
 - SSD1306 OLED on I2C address `0x3C`
 - ADS1115 on I2C address `0x48`
-- start/resume button on GPIO `4`, active low
-- stop/pause/reset button on GPIO `5`, active low
+- red start/resume button on GPIO `4`, active low
+- yellow stop/pause/reset button on GPIO `5`, active low
 - ESP32 I2C pins: SDA `8`, SCL `9`
 - ESP-NOW broadcast on Wi-Fi channel `1`
 

@@ -18,8 +18,8 @@ Adafruit_ADS1115 ads;
 Adafruit_SSD1306 display(SCREEN_WIDTH, SCREEN_HEIGHT, &Wire, -1);
 DynoTelemetryEspNowSender telemetrySender;
 
-const int startButtonPin = 4;
-const int stopButtonPin = 5;
+const int startButtonPin = 4;  // Red button: start/resume
+const int stopButtonPin = 5;   // Yellow button: stop/pause/reset
 
 const int I2C_SDA_PIN = 8;
 const int I2C_SCL_PIN = 9;

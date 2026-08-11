@@ -38,7 +38,8 @@ Dyno ESP-NOW ready (broadcast, channel 1, every 500 ms)
 Dyno ESP-NOW queued seq=12 P=84.215 W
 ```
 
-Flash the WROVER relay before the dyno C3. The existing live-car C3 can remain
+Flash `dyno_joulemeter_firmware.ino` to the dyno C3 after flashing the WROVER
+relay. The existing live-car C3 can remain
 on its current compatible live-telemetry firmware. After flashing the dyno C3,
 require both the `Dyno ESP-NOW queued` line above and the relay's matching
 `DYNO seq=N delivered` line before treating the wireless path as working.

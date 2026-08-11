@@ -5,7 +5,7 @@
 
 #include "dyno_telemetry_espnow.h"
 
-// Prototype dyno joulemeter:
+// Dyno joulemeter firmware:
 // - ADS1115 AIN2: voltage sense input
 // - ADS1115 AIN1: ACS712 current sensor output
 // - OLED: live V/I/P/time and paused run summary

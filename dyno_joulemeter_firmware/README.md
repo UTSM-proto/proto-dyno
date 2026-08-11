@@ -58,10 +58,13 @@ const float VOLTAGE_SCALE = 11.0f;
 At every boot, the OLED displays **Zeroing current** while the firmware waits
 two seconds for the ACS712 to settle and then averages its zero-current output
 for three seconds. Keep the dyno stopped with no current flowing throughout
-this sequence. The measured voltage becomes the run's current zero offset.
+this sequence. ESP-NOW is initialized first so calibration includes the radio's
+normal power-state offset. The measured voltage becomes the run's current zero
+offset.
 
-Readings within `0.03 A` of calibrated zero and voltage readings within
-`0.005 V` of zero are displayed and transmitted as zero to suppress idle noise.
+Readings within `0.06 A` of calibrated zero and voltage readings within
+`0.02 V` of zero are displayed and transmitted as zero to suppress measured
+idle noise after applying the voltage-divider scale.
 
 `CURRENT_SENSOR_V_PER_A` is `0.066 V/A`, matching a common ACS712 30 A module. Change it if the installed sensor is a 5 A or 20 A version.
 

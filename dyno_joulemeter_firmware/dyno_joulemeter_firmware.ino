@@ -33,8 +33,8 @@ const float CURRENT_SENSOR_V_PER_A = 0.066f;
 // 10 kOhm from dyno+ to AIN2 and 1 kOhm from AIN2 to ground:
 // Vin / Vadc = (10k + 1k) / 1k = 11.
 const float VOLTAGE_SCALE = 11.0f;
-const float CURRENT_DEADBAND_A = 0.03f;
-const float VOLTAGE_DEADBAND_V = 0.005f;
+const float CURRENT_DEADBAND_A = 0.06f;
+const float VOLTAGE_DEADBAND_V = 0.02f;
 const uint32_t CURRENT_ZERO_SETTLE_MS = 2000;
 const uint32_t CURRENT_ZERO_CALIBRATION_MS = 3000;
 
@@ -96,8 +96,8 @@ void setup() {
 
   ads.setGain(GAIN_TWOTHIRDS);
 
-  calibrateCurrentZero();
   telemetrySender.begin();
+  calibrateCurrentZero();
 }
 
 void calibrateCurrentZero() {
